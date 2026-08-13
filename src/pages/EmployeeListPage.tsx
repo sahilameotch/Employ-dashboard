@@ -1,16 +1,22 @@
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { toast } from 'sonner'
-import { Pencil, Plus, Search, Trash2 } from 'lucide-react'
-import type { Employee, EmployeeStatus } from '@/features/employees/types'
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import { Pencil, Plus, Search, Trash2 } from "lucide-react";
+import type { Employee, EmployeeStatus } from "@/features/employees/types";
 import {
   filterStaticEmployees,
   paginateStaticEmployees,
   staticEmployees,
-} from '@/features/employees/staticData'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+} from "@/features/employees/staticData";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -18,9 +24,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -28,41 +34,45 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 
-const PAGE_SIZE = 8
+const PAGE_SIZE = 8;
 
 export function EmployeeListPage() {
-  const [employees, setEmployees] = useState<Employee[]>(staticEmployees)
-  const [searchInput, setSearchInput] = useState('')
-  const [search, setSearch] = useState('')
-  const [status, setStatus] = useState<EmployeeStatus | 'All'>('All')
-  const [page, setPage] = useState(1)
-  const [pendingDelete, setPendingDelete] = useState<Employee | null>(null)
+  const [employees, setEmployees] = useState<Employee[]>(staticEmployees);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState<EmployeeStatus | "All">("All");
+  const [page, setPage] = useState(1);
+  const [pendingDelete, setPendingDelete] = useState<Employee | null>(null);
 
   const data = useMemo(() => {
-    const filtered = filterStaticEmployees(employees, { search, status })
-    return paginateStaticEmployees(filtered, page, PAGE_SIZE)
-  }, [employees, search, status, page])
+    const filtered = filterStaticEmployees(employees, { search, status });
+    return paginateStaticEmployees(filtered, page, PAGE_SIZE);
+  }, [employees, search, status, page]);
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    setPage(1)
-    setSearch(searchInput.trim())
-  }
+    e.preventDefault();
+    setPage(1);
+    setSearch(searchInput.trim());
+  };
 
   const handleDelete = () => {
-    if (!pendingDelete) return
-    setEmployees((prev) => prev.filter((e) => e.id !== pendingDelete.id))
-    toast.success(`${pendingDelete.firstName} ${pendingDelete.lastName} deleted`)
-    setPendingDelete(null)
-  }
+    if (!pendingDelete) return;
+    setEmployees((prev) => prev.filter((e) => e.id !== pendingDelete.id));
+    toast.success(
+      `${pendingDelete.firstName} ${pendingDelete.lastName} deleted`,
+    );
+    setPendingDelete(null);
+  };
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Employee directory</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Employee directory
+          </h2>
           <p className="text-sm text-muted-foreground">
             Search, filter, edit, or remove employee records.
           </p>
@@ -78,10 +88,15 @@ export function EmployeeListPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Filters</CardTitle>
-          <CardDescription>Find employees by name, code, department, or status</CardDescription>
+          <CardDescription>
+            Find employees by name, code, department, or status
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSearch} className="grid gap-3 md:grid-cols-[1fr_160px_auto]">
+          <form
+            onSubmit={handleSearch}
+            className="grid gap-3 md:grid-cols-[1fr_160px_auto]"
+          >
             <div className="space-y-2">
               <Label htmlFor="search">Search</Label>
               <div className="relative">
@@ -102,8 +117,8 @@ export function EmployeeListPage() {
                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={status}
                 onChange={(e) => {
-                  setStatus(e.target.value as EmployeeStatus | 'All')
-                  setPage(1)
+                  setStatus(e.target.value as EmployeeStatus | "All");
+                  setPage(1);
                 }}
               >
                 <option value="All">All</option>
@@ -139,35 +154,56 @@ export function EmployeeListPage() {
                   <TableRow>
                     <TableHead>Code</TableHead>
                     <TableHead>Name</TableHead>
-                    <TableHead className="hidden md:table-cell">Department</TableHead>
-                    <TableHead className="hidden lg:table-cell">Designation</TableHead>
-                    <TableHead className="hidden sm:table-cell">Status</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Department
+                    </TableHead>
+                    <TableHead className="hidden lg:table-cell">
+                      Designation
+                    </TableHead>
+                    <TableHead className="hidden sm:table-cell">
+                      Status
+                    </TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {data.data.map((emp) => (
                     <TableRow key={emp.id}>
-                      <TableCell className="font-medium text-primary">{emp.employeeCode}</TableCell>
+                      <TableCell className="font-medium text-primary">
+                        {emp.employeeCode}
+                      </TableCell>
                       <TableCell>
                         <div>
                           <p className="font-medium">
                             {emp.firstName} {emp.lastName}
                           </p>
-                          <p className="text-xs text-muted-foreground">{emp.email}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {emp.email}
+                          </p>
                         </div>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">{emp.department}</TableCell>
-                      <TableCell className="hidden lg:table-cell">{emp.designation}</TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {emp.department}
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {emp.designation}
+                      </TableCell>
                       <TableCell className="hidden sm:table-cell">
-                        <Badge variant={emp.status === 'Active' ? 'success' : 'secondary'}>
+                        <Badge
+                          variant={
+                            emp.status === "Active" ? "success" : "secondary"
+                          }
+                        >
                           {emp.status}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           <Button asChild variant="ghost" size="icon">
-                            <Link to={`/employees/${emp.id}/edit`} aria-label="Edit">
+                            <Link
+                              to={`/employees/${emp.id}/edit`}
+                              aria-label="Edit"
+                            >
                               <Pencil />
                             </Link>
                           </Button>
@@ -190,7 +226,8 @@ export function EmployeeListPage() {
               <div className="flex flex-col items-center justify-between gap-3 border-t px-4 py-3 sm:flex-row">
                 <p className="text-sm text-muted-foreground">
                   Showing {(data.page - 1) * data.pageSize + 1}–
-                  {Math.min(data.page * data.pageSize, data.total)} of {data.total}
+                  {Math.min(data.page * data.pageSize, data.total)} of{" "}
+                  {data.total}
                 </p>
                 <div className="flex items-center gap-2">
                   <Button
@@ -219,7 +256,10 @@ export function EmployeeListPage() {
         </CardContent>
       </Card>
 
-      <Dialog open={Boolean(pendingDelete)} onOpenChange={(open) => !open && setPendingDelete(null)}>
+      <Dialog
+        open={Boolean(pendingDelete)}
+        onOpenChange={(open) => !open && setPendingDelete(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete employee?</DialogTitle>
@@ -240,5 +280,5 @@ export function EmployeeListPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

@@ -7,17 +7,6 @@ import type {
   EmployeeSummary,
 } from './types'
 
-/**
- * Employee RTK Query endpoints — ready to wire into UI later.
- * UI currently uses static data from `staticData.ts`.
- *
- * GET    /employees
- * GET    /employees/summary
- * GET    /employees/:id
- * POST   /employees
- * PUT    /employees/:id
- * DELETE /employees/:id
- */
 export const employeesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getEmployees: builder.query<EmployeeListResponse, EmployeeListParams | void>({

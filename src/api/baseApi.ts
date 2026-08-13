@@ -1,13 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { dummyFetch } from '@/api/dummyFetch'
 
-/**
- * Toggle dummy vs real API.
- * When real backend is ready:
- * 1. Set VITE_USE_DUMMY_API=false (or remove it)
- * 2. Set VITE_API_BASE_URL=https://your-api.com/api
- * Endpoint paths in feature APIs stay the same.
- */
 const useDummyApi = import.meta.env.VITE_USE_DUMMY_API !== 'false'
 
 export const baseApi = createApi({
