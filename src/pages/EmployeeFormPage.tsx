@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import type { EmployeeFormData } from '@/features/employees/types'
-import { getStaticEmployeeById } from '@/features/employees/staticData'
+import { getStaticEmployeeById, nextStaticEmployeeCode } from '@/features/employees/staticData'
 import {
   DEPARTMENTS,
   emptyEmployeeForm,
@@ -37,6 +37,7 @@ function EmployeeFormPage({
   const [form, setForm] = useState<EmployeeFormData>(emptyEmployeeForm)
   const [errors, setErrors] = useState<FormErrors>({})
   const [saving, setSaving] = useState(false)
+  const nextEmployeeCode=nextStaticEmployeeCode();
 
   useEffect(() => {
     if (existing) {
@@ -96,6 +97,10 @@ function EmployeeFormPage({
   const fieldClass = (key: keyof FormErrors) =>
     errors[key] ? 'border-destructive focus-visible:ring-destructive' : ''
 
+  const getEmployeeCode= (code: string) => {
+    return isEdit ? code:nextEmployeeCode
+  }
+
   return (
     <div className="mx-auto w-full max-w-3xl">
       <Card>
@@ -113,10 +118,10 @@ function EmployeeFormPage({
               <Field label="Employee Code" error={errors.employeeCode} htmlFor="employeeCode">
                 <Input
                   id="employeeCode"
-                  value={form.employeeCode}
+                  value={getEmployeeCode(form.employeeCode)}
                   onChange={(e) => setField('employeeCode', e.target.value)}
                   className={fieldClass('employeeCode')}
-                  placeholder="EMP013"
+                  disabled
                 />
               </Field>
               <Field label="Status" error={errors.status} htmlFor="status">
@@ -161,7 +166,7 @@ function EmployeeFormPage({
                   value={form.phone}
                   onChange={(e) => setField('phone', e.target.value)}
                   className={fieldClass('phone')}
-                  placeholder="+91 98765 43210"
+                  placeholder="+91 xxxx-xxx-xxxxx"
                 />
               </Field>
               <Field label="Department" error={errors.department} htmlFor="department">
@@ -205,7 +210,7 @@ function EmployeeFormPage({
                   value={form.salary || ''}
                   onChange={(e) => setField('salary', Number(e.target.value))}
                   className={fieldClass('salary')}
-                  placeholder="800000"
+                  placeholder="Rs xxx,xxx.xx"
                 />
               </Field>
             </div>

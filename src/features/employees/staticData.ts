@@ -10,6 +10,10 @@ export const staticEmployeeSummary: EmployeeSummary = {
   inactive: staticEmployees.filter((e) => e.status === 'Inactive').length,
 }
 
+export function nextStaticEmployeeCode() {
+  return `EMP${String(Math.max(...staticEmployees.map(e=>Number(e.employeeCode.match(/\d+/))))+ 1).padStart(3, '0')}`
+} 
+
 export function filterStaticEmployees(
   employees: Employee[],
   params: EmployeeListParams = {},
