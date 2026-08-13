@@ -87,7 +87,7 @@ function EmployeeFormPage({
         </CardHeader>
         <CardFooter>
           <Button asChild>
-            <Link to="/employees">Back  to list</Link>
+            <Link to="/employees">Back to list</Link>
           </Button>
         </CardFooter>
       </Card>
