@@ -1,10 +1,8 @@
 import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { PanelLeft } from 'lucide-react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -123,7 +121,7 @@ const SidebarProvider = React.forwardRef<
               } as React.CSSProperties
             }
             className={cn(
-              'group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar',
+              'group/sidebar-wrapper flex h-svh w-full overflow-hidden has-data-[variant=inset]:bg-sidebar',
               className,
             )}
             ref={ref}
@@ -222,13 +220,12 @@ const Sidebar = React.forwardRef<
             variant === 'floating' || variant === 'inset'
               ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+1rem+2px)]'
               : 'group-data-[collapsible=icon]:w-[var(--sidebar-width-icon)] group-data-[side=left]:border-r group-data-[side=right]:border-l',
-            className,
           )}
           {...props}
         >
           <div
             data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
+            className="relative flex h-full w-full flex-col overflow-visible bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
           >
             {children}
           </div>
@@ -240,26 +237,54 @@ const Sidebar = React.forwardRef<
 Sidebar.displayName = 'Sidebar'
 
 const SidebarTrigger = React.forwardRef<
-  React.ComponentRef<typeof Button>,
-  React.ComponentProps<typeof Button>
+  HTMLButtonElement,
+  React.ComponentProps<'button'>
 >(({ className, onClick, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, openMobile, isMobile } = useSidebar()
+  const open = isMobile ? openMobile : false
+
   return (
-    <Button
+    <button
       ref={ref}
+      type="button"
       data-sidebar="trigger"
-      variant="ghost"
-      size="icon"
-      className={cn('h-7 w-7', className)}
+      aria-label={open ? 'Close menu' : 'Open menu'}
+      aria-expanded={open}
+      className={cn(
+        'group relative flex size-10 shrink-0 items-center justify-center rounded-full',
+        'border border-primary/15 bg-card text-primary shadow-[0_1px_2px_rgba(27,42,74,0.08)]',
+        'transition-all duration-200 hover:border-gold/60 hover:shadow-[0_2px_8px_rgba(27,42,74,0.12)]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50',
+        'active:scale-95',
+        className,
+      )}
       onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      <PanelLeft />
-      <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+      <span className="relative flex h-3.5 w-4 flex-col justify-between">
+        <span
+          className={cn(
+            'h-[1.5px] w-full origin-center rounded-full bg-primary transition-all duration-300',
+            open && 'translate-y-[6.25px] rotate-45',
+          )}
+        />
+        <span
+          className={cn(
+            'h-[1.5px] w-[70%] self-end rounded-full bg-gold transition-all duration-300',
+            open && 'w-full origin-center -rotate-45 opacity-0',
+          )}
+        />
+        <span
+          className={cn(
+            'h-[1.5px] w-full origin-center rounded-full bg-primary transition-all duration-300',
+            open && '-translate-y-[6.25px] -rotate-45',
+          )}
+        />
+      </span>
+    </button>
   )
 })
 SidebarTrigger.displayName = 'SidebarTrigger'
@@ -291,8 +316,8 @@ const SidebarInset = React.forwardRef<HTMLDivElement, React.ComponentProps<'main
     <main
       ref={ref}
       className={cn(
-        'relative flex w-full flex-1 flex-col bg-background',
-        'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow',
+        'relative flex min-h-0 w-full flex-1 flex-col overflow-y-auto bg-background',
+        'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-lg md:peer-data-[variant=inset]:shadow-sm',
         className,
       )}
       {...props}

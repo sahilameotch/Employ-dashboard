@@ -1,4 +1,14 @@
-export type EmployeeStatus = 'Active' | 'Inactive'
+export type EmployeeStatus = 1 | 2
+
+export const EMPLOYEE_STATUS = {
+  Active: 1 as const,
+  Inactive: 2 as const,
+}
+
+export const EMPLOYEE_STATUS_LABEL: Record<EmployeeStatus, 'Active' | 'Inactive'> = {
+  1: 'Active',
+  2: 'Inactive',
+}
 
 export interface Employee {
   id: string
@@ -12,27 +22,12 @@ export interface Employee {
   joiningDate: string
   salary: number
   status: EmployeeStatus
+  createdAt?: string
+  updatedAt?: string | null
 }
 
-export type EmployeeFormData = Omit<Employee, 'id'>
+export type EmployeeFormData = Omit<Employee, 'id' | 'createdAt' | 'updatedAt'>
 
-export interface EmployeeListParams {
-  search?: string
-  page?: number
-  pageSize?: number
-  status?: EmployeeStatus | 'All'
-}
-
-export interface EmployeeListResponse {
-  data: Employee[]
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
-}
-
-export interface EmployeeSummary {
-  total: number
-  active: number
-  inactive: number
+export interface EmployeeSearchParams {
+  keyword: string
 }

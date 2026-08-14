@@ -1,22 +1,18 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { dummyFetch } from '@/api/dummyFetch'
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const useDummyApi = import.meta.env.VITE_USE_DUMMY_API !== 'false'
+const rawBase = import.meta.env.VITE_API_BASE_URL || "/api";
+const baseUrl = rawBase.replace(/\/+$/, "");
 
 export const baseApi = createApi({
-  reducerPath: 'api',
+  reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL || '/api',
-    // Remove `fetchFn` when connecting the real API
-    ...(useDummyApi ? { fetchFn: dummyFetch } : {}),
+    baseUrl,
     prepareHeaders: (headers) => {
-      // Later: attach auth token here
-      // const token = localStorage.getItem('token')
-      // if (token) headers.set('Authorization', `Bearer ${token}`)
-      headers.set('Accept', 'application/json')
-      return headers
+      headers.set("Accept", "application/json");
+      headers.set("Content-Type", "application/json");
+      return headers;
     },
   }),
-  tagTypes: ['Employee', 'EmployeeSummary'],
+  tagTypes: ["Employee"],
   endpoints: () => ({}),
-})
+});

@@ -1,8 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { baseApi } from '@/api/baseApi'
-
-// Register RTK Query endpoints (UI not wired yet — uses staticData.ts)
 import '@/features/employees/employeesApi'
 
 export const store = configureStore({

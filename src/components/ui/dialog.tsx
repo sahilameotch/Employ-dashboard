@@ -49,7 +49,16 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)} {...props} />
+  return (
+    <div
+      className={cn(
+        'flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2',
+        '[&>button]:w-full sm:[&>button]:w-auto',
+        className,
+      )}
+      {...props}
+    />
+  )
 }
 
 const DialogTitle = React.forwardRef<

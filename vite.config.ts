@@ -11,4 +11,13 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://employee-management-task-9ylf.onrender.com',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
 })
