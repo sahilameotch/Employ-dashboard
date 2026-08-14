@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import {
   Users,
   UserCheck,
@@ -11,14 +11,23 @@ import {
   CalendarDays,
   IndianRupee,
   Search,
-} from 'lucide-react'
-import { useGetEmployeesQuery } from '@/features/employees/employeesApi'
-import type { Employee } from '@/features/employees/types'
-import { EMPLOYEE_STATUS, EMPLOYEE_STATUS_LABEL } from '@/features/employees/types'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
+} from "lucide-react";
+import { useGetEmployeesQuery } from "@/features/employees/employeesApi";
+import type { Employee } from "@/features/employees/types";
+import {
+  EMPLOYEE_STATUS,
+  EMPLOYEE_STATUS_LABEL,
+} from "@/features/employees/types";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -26,69 +35,74 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 
 function formatCurrency(value: number) {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
     maximumFractionDigits: 0,
-  }).format(value)
+  }).format(value);
 }
 
 function formatDate(value: string) {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-  return date.toLocaleDateString('en-IN', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 function getGreeting() {
-  const hour = new Date().getHours()
-  if (hour < 12) return 'Good morning'
-  if (hour < 17) return 'Good afternoon'
-  return 'Good evening'
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
 }
 
 function buildDepartmentStats(employees: Employee[]) {
-  const map = new Map<string, { total: number; active: number }>()
+  const map = new Map<string, { total: number; active: number }>();
   for (const emp of employees) {
-    const key = emp.department || 'Unassigned'
-    const current = map.get(key) ?? { total: 0, active: 0 }
-    current.total += 1
-    if (emp.status === EMPLOYEE_STATUS.Active) current.active += 1
-    map.set(key, current)
+    const key = emp.department || "Unassigned";
+    const current = map.get(key) ?? { total: 0, active: 0 };
+    current.total += 1;
+    if (emp.status === EMPLOYEE_STATUS.Active) current.active += 1;
+    map.set(key, current);
   }
   return [...map.entries()]
     .map(([name, stats]) => ({ name, ...stats }))
-    .sort((a, b) => b.total - a.total)
+    .sort((a, b) => b.total - a.total);
 }
 
 export function DashboardPage() {
-  const { data = [], isLoading, isError, refetch } = useGetEmployeesQuery()
+  const { data = [], isLoading, isError, refetch } = useGetEmployeesQuery();
 
   const stats = useMemo(() => {
-    const total = data.length
-    const active = data.filter((e) => e.status === EMPLOYEE_STATUS.Active).length
-    const inactive = total - active
-    const departments = new Set(data.map((e) => e.department).filter(Boolean)).size
+    const total = data.length;
+    const active = data.filter(
+      (e) => e.status === EMPLOYEE_STATUS.Active,
+    ).length;
+    const inactive = total - active;
+    const departments = new Set(data.map((e) => e.department).filter(Boolean))
+      .size;
     const avgSalary =
-      total > 0 ? Math.round(data.reduce((sum, e) => sum + (e.salary || 0), 0) / total) : 0
+      total > 0
+        ? Math.round(data.reduce((sum, e) => sum + (e.salary || 0), 0) / total)
+        : 0;
     const recentHires = [...data]
       .sort((a, b) => b.joiningDate.localeCompare(a.joiningDate))
-      .slice(0, 5)
+      .slice(0, 5);
     const recentActivity = [...data]
       .sort((a, b) => {
-        const aTime = a.updatedAt || a.createdAt || a.joiningDate
-        const bTime = b.updatedAt || b.createdAt || b.joiningDate
-        return String(bTime).localeCompare(String(aTime))
+        const aTime = a.updatedAt || a.createdAt || a.joiningDate;
+        const bTime = b.updatedAt || b.createdAt || b.joiningDate;
+        return String(bTime).localeCompare(String(aTime));
       })
-      .slice(0, 6)
-    const departmentStats = buildDepartmentStats(data)
-    const activeRate = total > 0 ? Math.round((active / total) * 100) : 0
+      .slice(0, 6);
+    const departmentStats = buildDepartmentStats(data);
+    const activeRate = total > 0 ? Math.round((active / total) * 100) : 0;
 
     return {
       total,
@@ -100,46 +114,46 @@ export function DashboardPage() {
       recentActivity,
       departmentStats,
       activeRate,
-    }
-  }, [data])
+    };
+  }, [data]);
 
-  const today = new Date().toLocaleDateString('en-IN', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+  const today = new Date().toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   const summaryCards = [
     {
-      label: 'Total Employees',
+      label: "Total Employees",
       value: stats.total,
       icon: Users,
-      hint: 'All records in directory',
-      tone: 'bg-primary/10 text-primary',
+      hint: "All records in directory",
+      tone: "bg-primary/10 text-primary",
     },
     {
-      label: 'Active',
+      label: "Active",
       value: stats.active,
       icon: UserCheck,
       hint: `${stats.activeRate}% of workforce`,
-      tone: 'bg-forest/15 text-forest',
+      tone: "bg-forest/15 text-forest",
     },
     {
-      label: 'Inactive',
+      label: "Inactive",
       value: stats.inactive,
       icon: UserX,
-      hint: 'Disabled or offboarded',
-      tone: 'bg-gold/20 text-gold-foreground',
+      hint: "Disabled or offboarded",
+      tone: "bg-gold/20 text-gold-foreground",
     },
     {
-      label: 'Departments',
+      label: "Departments",
       value: stats.departments,
       icon: Building2,
-      hint: 'Unique teams represented',
-      tone: 'bg-primary/10 text-primary',
+      hint: "Unique teams represented",
+      tone: "bg-primary/10 text-primary",
     },
-  ]
+  ];
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">
@@ -148,23 +162,32 @@ export function DashboardPage() {
           <div className="absolute inset-x-0 bottom-0 h-1 bg-gold" />
           <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl space-y-2">
-              <p className="text-sm tracking-wide text-primary-foreground/70">{today}</p>
+              <p className="text-sm tracking-wide text-primary-foreground/70">
+                {today}
+              </p>
               <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
                 {getGreeting()}, HR team
               </h2>
               <p className="text-sm text-primary-foreground/75 sm:text-base">
-                Track workforce health, review recent joiners, and manage employee records from one
-                place.
+                Track workforce health, review recent joiners, and manage
+                employee records from one place.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button asChild variant="secondary" className="bg-card text-foreground hover:bg-card/90">
+              <Button
+                asChild
+                variant="secondary"
+                className="bg-card text-foreground hover:bg-card/90"
+              >
                 <Link to="/employees">
                   <Search />
                   Browse directory
                 </Link>
               </Button>
-              <Button asChild className="border border-gold/50 bg-gold text-gold-foreground hover:bg-gold/90">
+              <Button
+                asChild
+                className="border border-gold/50 bg-gold text-gold-foreground hover:bg-gold/90"
+              >
                 <Link to="/employees/new">
                   <Plus />
                   Add employee
@@ -179,7 +202,9 @@ export function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Unable to load dashboard</CardTitle>
-            <CardDescription>Check the API connection and try again.</CardDescription>
+            <CardDescription>
+              Check the API connection and try again.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Button variant="outline" onClick={() => refetch()}>
@@ -193,7 +218,10 @@ export function DashboardPage() {
             <Card className="overflow-hidden">
               <div className="grid grid-cols-2 divide-x divide-y">
                 {summaryCards.map((card) => (
-                  <div key={card.label} className="flex items-center gap-3 p-3.5">
+                  <div
+                    key={card.label}
+                    className="flex items-center gap-3 p-3.5"
+                  >
                     <span className={`shrink-0 rounded-md p-2 ${card.tone}`}>
                       <card.icon className="size-4" />
                     </span>
@@ -234,7 +262,9 @@ export function DashboardPage() {
                       {card.value}
                     </div>
                   )}
-                  <p className="mt-1 text-xs text-muted-foreground">{card.hint}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {card.hint}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -245,7 +275,9 @@ export function DashboardPage() {
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                   <CardTitle>Workforce composition</CardTitle>
-                  <CardDescription>Active vs inactive distribution</CardDescription>
+                  <CardDescription>
+                    Active vs inactive distribution
+                  </CardDescription>
                 </div>
                 <Badge variant="secondary">{stats.activeRate}% active</Badge>
               </CardHeader>
@@ -257,7 +289,8 @@ export function DashboardPage() {
                   </div>
                 ) : stats.total === 0 ? (
                   <p className="text-sm text-muted-foreground">
-                    No employees yet. Add your first record to populate insights.
+                    No employees yet. Add your first record to populate
+                    insights.
                   </p>
                 ) : (
                   <>
@@ -273,14 +306,18 @@ export function DashboardPage() {
                           <UserCheck className="size-4 text-forest" />
                           Active
                         </div>
-                        <p className="mt-2 font-display text-2xl font-semibold">{stats.active}</p>
+                        <p className="mt-2 font-display text-2xl font-semibold">
+                          {stats.active}
+                        </p>
                       </div>
                       <div className="rounded-md border bg-muted/40 p-4">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <UserX className="size-4 text-gold-foreground" />
                           Inactive
                         </div>
-                        <p className="mt-2 font-display text-2xl font-semibold">{stats.inactive}</p>
+                        <p className="mt-2 font-display text-2xl font-semibold">
+                          {stats.inactive}
+                        </p>
                       </div>
                       <div className="rounded-md border bg-muted/40 p-4">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -312,7 +349,9 @@ export function DashboardPage() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium">Add employee</p>
-                    <p className="text-xs text-muted-foreground">Create a new profile</p>
+                    <p className="text-xs text-muted-foreground">
+                      Create a new profile
+                    </p>
                   </div>
                   <ArrowRight className="size-4 text-muted-foreground" />
                 </Link>
@@ -325,7 +364,9 @@ export function DashboardPage() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium">Search directory</p>
-                    <p className="text-xs text-muted-foreground">Find by name or code</p>
+                    <p className="text-xs text-muted-foreground">
+                      Find by name or code
+                    </p>
                   </div>
                   <ArrowRight className="size-4 text-muted-foreground" />
                 </Link>
@@ -338,7 +379,9 @@ export function DashboardPage() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium">Review records</p>
-                    <p className="text-xs text-muted-foreground">Edit or offboard staff</p>
+                    <p className="text-xs text-muted-foreground">
+                      Edit or offboard staff
+                    </p>
                   </div>
                   <ArrowRight className="size-4 text-muted-foreground" />
                 </Link>
@@ -360,17 +403,24 @@ export function DashboardPage() {
                     ))}
                   </div>
                 ) : stats.departmentStats.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No department data available.</p>
+                  <p className="text-sm text-muted-foreground">
+                    No department data available.
+                  </p>
                 ) : (
                   <ul className="space-y-3">
                     {stats.departmentStats.slice(0, 6).map((dept) => {
                       const width = stats.total
-                        ? Math.max(8, Math.round((dept.total / stats.total) * 100))
-                        : 0
+                        ? Math.max(
+                            8,
+                            Math.round((dept.total / stats.total) * 100),
+                          )
+                        : 0;
                       return (
                         <li key={dept.name} className="space-y-1.5">
                           <div className="flex items-center justify-between gap-3 text-sm">
-                            <span className="truncate font-medium">{dept.name}</span>
+                            <span className="truncate font-medium">
+                              {dept.name}
+                            </span>
                             <span className="shrink-0 text-muted-foreground">
                               {dept.total} · {dept.active} active
                             </span>
@@ -382,7 +432,7 @@ export function DashboardPage() {
                             />
                           </div>
                         </li>
-                      )
+                      );
                     })}
                   </ul>
                 )}
@@ -393,7 +443,9 @@ export function DashboardPage() {
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                   <CardTitle>Recent joiners</CardTitle>
-                  <CardDescription>Latest employees by joining date</CardDescription>
+                  <CardDescription>
+                    Latest employees by joining date
+                  </CardDescription>
                 </div>
                 <Button asChild variant="outline" size="sm">
                   <Link to="/employees">
@@ -418,7 +470,9 @@ export function DashboardPage() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Employee</TableHead>
-                        <TableHead className="hidden sm:table-cell">Department</TableHead>
+                        <TableHead className="hidden sm:table-cell">
+                          Department
+                        </TableHead>
                         <TableHead>Joined</TableHead>
                         <TableHead>Status</TableHead>
                       </TableRow>
@@ -431,10 +485,14 @@ export function DashboardPage() {
                               <p className="font-medium">
                                 {emp.firstName} {emp.lastName}
                               </p>
-                              <p className="text-xs text-muted-foreground">{emp.employeeCode}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {emp.employeeCode}
+                              </p>
                             </div>
                           </TableCell>
-                          <TableCell className="hidden sm:table-cell">{emp.department}</TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {emp.department}
+                          </TableCell>
                           <TableCell>
                             <span className="inline-flex items-center gap-1 text-sm">
                               <CalendarDays className="size-3.5 text-muted-foreground" />
@@ -444,7 +502,9 @@ export function DashboardPage() {
                           <TableCell>
                             <Badge
                               variant={
-                                emp.status === EMPLOYEE_STATUS.Active ? 'success' : 'secondary'
+                                emp.status === EMPLOYEE_STATUS.Active
+                                  ? "success"
+                                  : "secondary"
                               }
                             >
                               {EMPLOYEE_STATUS_LABEL[emp.status]}
@@ -459,7 +519,7 @@ export function DashboardPage() {
             </Card>
           </section>
 
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>Directory snapshot</CardTitle>
               <CardDescription>Recently created or updated employee records</CardDescription>
@@ -530,9 +590,9 @@ export function DashboardPage() {
                 </Table>
               )}
             </CardContent>
-          </Card>
+          </Card> */}
         </>
       )}
     </div>
-  )
+  );
 }
