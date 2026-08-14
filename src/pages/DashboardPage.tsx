@@ -319,7 +319,7 @@ export function DashboardPage() {
                           {stats.inactive}
                         </p>
                       </div>
-                      <div className="rounded-md border bg-muted/40 p-4">
+                      {/* <div className="rounded-md border bg-muted/40 p-4">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <IndianRupee className="size-4 text-primary" />
                           Avg salary
@@ -327,7 +327,7 @@ export function DashboardPage() {
                         <p className="mt-2 font-display text-xl font-semibold">
                           {formatCurrency(stats.avgSalary)}
                         </p>
-                      </div>
+                      </div> */}
                     </div>
                   </>
                 )}
