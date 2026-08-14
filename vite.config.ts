@@ -3,6 +3,16 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'node:url'
 
+const API_ORIGIN = 'https://employee-management-task-9ylf.onrender.com'
+
+const apiProxy = {
+  '/api': {
+    target: API_ORIGIN,
+    changeOrigin: true,
+    secure: true,
+  },
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -12,12 +22,9 @@ export default defineConfig({
     },
   },
   server: {
-    proxy: {
-      '/api': {
-        target: 'https://employee-management-task-9ylf.onrender.com',
-        changeOrigin: true,
-        secure: true,
-      },
-    },
+    proxy: apiProxy,
+  },
+  preview: {
+    proxy: apiProxy,
   },
 })
